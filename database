@@ -1,0 +1,164 @@
+MariaDB [(none)]> use _13020220183;
+Database changed
+MariaDB [_13020220183]> create table mahasiswa(
+    -> stb int primary key,
+    -> nama varchar(50),
+    -> jeniskelamin enum('wanita', 'pria'));
+Query OK, 0 rows affected (0.106 sec)
+
+MariaDB [_13020220183]> create table matakuliah(
+    -> kodemk int primary key,
+    -> namamk varchar(50),
+    -> sks int(1));
+Query OK, 0 rows affected (0.148 sec)
+
+MariaDB [_13020220183]> create table jadwalmhs(
+    -> stb int primary key,
+    -> nama varchar(50),
+    -> namamk varchar(50));
+Query OK, 0 rows affected (0.128 sec)
+
+MariaDB [_13020220183]> alter table jadwalmhs add foreign key (stb) references mahasiswa(stb);
+Query OK, 0 rows affected (0.528 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [_13020220183]> drop table jadwalmhs;
+Query OK, 0 rows affected (0.268 sec)
+
+MariaDB [_13020220183]> create table jadwalmhs(
+    -> kode int(5),
+    -> stb int,
+    -> kodemk int,
+    -> foreign key (stb) references mahasiswa(stb),
+    -> foreign key (kodemk) references matakuliah(kodemk)
+    -> );
+Query OK, 0 rows affected (0.162 sec)
+
+MariaDB [_13020220183]> desc mahasiswa;
++--------------+-----------------------+------+-----+---------+-------+
+| Field        | Type                  | Null | Key | Default | Extra |
++--------------+-----------------------+------+-----+---------+-------+
+| stb          | int(11)               | NO   | PRI | NULL    |       |
+| nama         | varchar(50)           | YES  |     | NULL    |       |
+| jeniskelamin | enum('wanita','pria') | YES  |     | NULL    |       |
++--------------+-----------------------+------+-----+---------+-------+
+3 rows in set (0.009 sec)
+
+
+MariaDB [_13020220183]> desc matakuliah;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| kodemk | int(11)     | NO   | PRI | NULL    |       |
+| namamk | varchar(50) | YES  |     | NULL    |       |
+| sks    | int(1)      | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.010 sec)
+
+MariaDB [_13020220183]> desc jadwalmhs;
++--------+---------+------+-----+---------+-------+
+| Field  | Type    | Null | Key | Default | Extra |
++--------+---------+------+-----+---------+-------+
+| kode   | int(5)  | YES  |     | NULL    |       |
+| stb    | int(11) | YES  | MUL | NULL    |       |
+| kodemk | int(11) | YES  | MUL | NULL    |       |
++--------+---------+------+-----+---------+-------+
+3 rows in set (0.009 sec)
+
+MariaDB [_13020220183]> alter table jadwalmhs add primary key (kode);
+Query OK, 0 rows affected (0.385 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [_13020220183]> desc jadwalmhs;
++--------+---------+------+-----+---------+-------+
+| Field  | Type    | Null | Key | Default | Extra |
++--------+---------+------+-----+---------+-------+
+| kode   | int(5)  | NO   | PRI | NULL    |       |
+| stb    | int(11) | YES  | MUL | NULL    |       |
+| kodemk | int(11) | YES  | MUL | NULL    |       |
++--------+---------+------+-----+---------+-------+
+3 rows in set (0.010 sec)
+
+MariaDB [_13020220183]> insert into mahasiswa
+    -> values
+    -> (13020220183, 'zara', 'wanita'),
+    -> (13020201111, 'haikal', 'pria');
+ERROR 1062 (23000): Duplicate entry '2147483647' for key 'PRIMARY'
+MariaDB [_13020220183]> insert into mahasiswa values
+    -> ('13020201111', 'haikal', 'pria');
+Query OK, 1 row affected, 1 warning (0.019 sec)
+
+MariaDB [_13020220183]>
+MariaDB [_13020220183]> insert into mahasiswa values
+    -> ('13020220183', 'zara', 'wanita');
+ERROR 1062 (23000): Duplicate entry '2147483647' for key 'PRIMARY'
+MariaDB [_13020220183]> insert into mahasiswa values
+    -> ('13020220183', 'zara', 'wanita');
+ERROR 1062 (23000): Duplicate entry '2147483647' for key 'PRIMARY'
+MariaDB [_13020220183]> insert into mahasiswa values
+    -> ('13020220183', 'zara', 'wanita');
+ERROR 1062 (23000): Duplicate entry '2147483647' for key 'PRIMARY'
+MariaDB [_13020220183]> desc matakuliah;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| kodemk | int(11)     | NO   | PRI | NULL    |       |
+| namamk | varchar(50) | YES  |     | NULL    |       |
+| sks    | int(1)      | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.010 sec)
+
+MariaDB [_13020220183]> insert into matakuliah(
+    -> (2, 'basis data', 3),
+    -> (1, 'riset', 2);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '2, 'basis data', 3),
+(1, 'riset', 2)' at line 2
+MariaDB [_13020220183]> insert into matakuliah values
+    -> (1, 'riset', 2),
+    -> (2, 'basis data', 3);
+Query OK, 2 rows affected (0.023 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [_13020220183]> select*from matakuliah;
++--------+------------+------+
+| kodemk | namamk     | sks  |
++--------+------------+------+
+|      1 | riset      |    2 |
+|      2 | basis data |    3 |
++--------+------------+------+
+2 rows in set (0.000 sec)
+
+MariaDB [_13020220183]> select*from mahasiswa;
++------------+--------+--------------+
+| stb        | nama   | jeniskelamin |
++------------+--------+--------------+
+| 2147483647 | haikal | pria         |
++------------+--------+--------------+
+1 row in set (0.000 sec)
+
+MariaDB [_13020220183]> desc jadwalmhs;
++--------+---------+------+-----+---------+-------+
+| Field  | Type    | Null | Key | Default | Extra |
++--------+---------+------+-----+---------+-------+
+| kode   | int(5)  | NO   | PRI | NULL    |       |
+| stb    | int(11) | YES  | MUL | NULL    |       |
+| kodemk | int(11) | YES  | MUL | NULL    |       |
++--------+---------+------+-----+---------+-------+
+3 rows in set (0.011 sec)
+
+MariaDB [_13020220183]> insert into jadwalmhs values
+    -> (1, '2147483647', 2),
+    -> (2, '2147483647', 1);
+Query OK, 2 rows affected (0.042 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [_13020220183]> select*from jadwalmhs;
++------+------------+--------+
+| kode | stb        | kodemk |
++------+------------+--------+
+|    1 | 2147483647 |      2 |
+|    2 | 2147483647 |      1 |
++------+------------+--------+
+2 rows in set (0.000 sec)
+
+MariaDB [_13020220183]>
